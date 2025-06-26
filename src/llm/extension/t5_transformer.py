@@ -49,3 +49,5 @@ if __name__ == "__main__":
             generation_kwargs={"max_length": 50},
         ).value
         print(response)  # Output: La maison est merveilleuse.
+
+    __test_thinking()

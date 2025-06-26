@@ -8,3 +8,5 @@ build
 python-dotenv
 PyYAML
 inflection
+transformers
+torch
