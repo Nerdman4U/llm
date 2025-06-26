@@ -1,0 +1,44 @@
+/*
+VS Code Settings for the Gim Metaproject
+
+How to use:
+1. it is jsonc (json with comments)
+2. blocks (like [python])
+- support editor settings (such as formatting, tab size, etc.)
+- do not support extension-specific settings (i.e. pytest)
+
+NOTE:
+global defaultFormatter is used if it exists (!)
+"editor.defaultFormatter":  "esbenp.prettier-vscode",
+
+NOTE: do not add settings for black, it works.
+"python.formatting.provider": "black",
+"python.formatting.blackArgs": ["--line-length", "88"],
+*/
+
+{
+  /**
+   * GENERAL SETTINGS
+   */
+  "editor.tabSize": 4,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": null,
+  "files.exclude": {
+    "**/__pycache__/": true
+  },
+
+  /**
+   * PYTHON SETTINGS
+   */
+  "python.testing.pytestEnabled": true,
+  "python.testing.pytestArgs": ["tests/extension"],
+  "python.testing.unittestEnabled": false,
+  "python.testing.unittestArgs": [
+    "-v",
+    "-s",
+    "./tests/extension",
+    "-p",
+    "*test*.py"
+  ],
+  "python.analysis.extraPaths": ["./src"],
+}

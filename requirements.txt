@@ -1,0 +1,10 @@
+# Required Vendor packages.
+#
+# To install either:
+# 1. source .init_workspace (will install packages)
+# 2. pip install -r requirements.txt
+packaging
+build
+python-dotenv
+PyYAML
+inflection

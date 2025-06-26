@@ -1,0 +1,17 @@
+# !/bin/bash
+# NOTE: source .init_workspace to initialize workspace.
+# NOTE: this file under application project root.
+
+# Set environment
+source .activate
+
+# Install and updgrade pip
+python -m pip install --upgrade pip
+
+# Install vendor libraries
+pip install -r requirements.txt
+pip install -r dev-requirements.txt
+
+# Aliases
+alias pyt='python -m unittest discover -s tests/extension'
+alias cov='coverage run -m unittest discover -s tests/extension'

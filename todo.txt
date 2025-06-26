@@ -1,0 +1,61 @@
+1. Start
+
+Install virtual environment:
+$ python -m venv .venv
+
+Initialize workspace:
+$ source .init_workspace
+
+Install as editable project:
+# - while testing imported packages are found from .venv
+$ pip install -e .
+
+Run editor:
+$ code .
+
+Configure:
+edit src//.gim/meta.yml
+$ chmod 755 bin/run_app.sh
+
+Generate:
+gim_metaproject generate <project_name>
+
+Commit:
+$ git add -A
+$ git commit -m "Initial commit"
+
+Ready! You are now ready to start coding.
+
+
+
+
+2. Coding
+
+Edit src/ and tests/.
+
+Add fixtures to match structure:
+tests/fixtures/workspace/llm/src/llm/.gim
+tests/fixtures/workspace/llm/src/llm/.gim/project.yml
+tests/fixtures/workspace/llm/src/llm/extension/my_module.py
+
+Run tests:
+$ pyt
+
+Update startup script:
+edit src//main.py
+
+
+
+
+3. Build and Install
+
+edit build_app
+edit pyproject.toml
+
+$ source build_app
+
+
+
+
+4. Optional:
+

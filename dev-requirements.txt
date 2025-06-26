@@ -1,0 +1,7 @@
+# Vendor packages used while developing the Python application.
+#
+# $ source .init_workspace
+# => will install requirements and dev-requirements.
+pytest
+black
+coverage

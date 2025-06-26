@@ -1,0 +1,63 @@
+classes:
+  - name: BaseTransformer
+    description: Base transformer class
+    attributes:
+      - identifier: model_name
+        type: str
+        default: "t5-base"
+        description: Name of the model to use, e.g. "t5-base" (default)
+    validation:
+      model_name:
+        presence: true
+        type: str
+
+  - name: BertTransformer
+    description: Transformer class for BERT-based models
+    validation:
+      model_name:
+        choices:
+          - "bert-base-uncased"
+          - "bert-large-uncased"
+          - "bert-base-cased"
+          - "bert-large-cased"
+    flags:
+      - no-inherit-generated
+    extends:
+      - BaseTransformer
+
+  - name: T5Transformer
+    description: Transformer class for T5-based models
+    validation:
+      model_name:
+        choices:
+          - "t5-base"
+          - "t5-large"
+          - "t5-3b"
+          - "t5-11b"
+    flags:
+      - no-inherit-generated
+    extends:
+      - BaseTransformer
+
+  - name: CodeGemmaTransformer
+    description: Transformer class for google/codegemma models
+    validation:
+      model_name:
+        choices:
+          - "google/codegemma-2b"
+          - "google/codegemma-7b"
+    flags:
+      - no-inherit-generated
+    extends:
+      - BaseTransformer
+
+  - name: SalesforceTransformer
+    description: Transformer class for Salesforce models
+    validation:
+      model_name:
+        choices:
+          - "Salesforce/codegen-350M-mono"
+    flags:
+      - no-inherit-generated
+    extends:
+      - BaseTransformer

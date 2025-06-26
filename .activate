@@ -1,0 +1,8 @@
+# Activate virtual environment
+source .venv/bin/activate
+
+# ENV
+export PYTHONPATH=$PYTHONPATH:/opt/workspace/llm/src
+# export PYTHONPATH=$PYTHONPATH:/opt/workspace/locshapython/src
+# export PYTHONPATH=$PYTHONPATH:/opt/workspace/gim_package/src
+export PATH=$PATH:/opt/workspace/llm/bin
