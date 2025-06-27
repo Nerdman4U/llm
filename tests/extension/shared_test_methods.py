@@ -3,13 +3,17 @@ Shared test methods for Python Application Generator 3.10 Basic Structure
 """
 import pathlib
 from unittest.mock import patch
+from loguru import logger as loguru_logger
 
 import tests.generated.shared_test_methods as generated
 
 
 def logger():
-    """Return logger for the shared test methods"""
-    return generated.logger()
+    """Return logger for the shared test methods
+
+    NOTE: remove this method when loguru is used in the code.
+    """
+    return loguru_logger
 
 
 def getenv(test, key):
@@ -18,6 +22,7 @@ def getenv(test, key):
         return test.workspace
 
     raise KeyError(f"Environment variable {key} not found.")
+
 
 def set_up(test):
     """Set up the test environment"""

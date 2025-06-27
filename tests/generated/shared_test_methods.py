@@ -12,16 +12,10 @@ import pathlib
 from types import SimpleNamespace
 
 from locshapython.extension.commands.command_manager import CommandManager
-from locshapython.extension import utils
 
 # 1. from locshapython.extension.registry import Registry OR
 # 2. from gim_metaproject.extension.registry import Registry
 from locshapython.extension.registry import Registry
-
-
-def logger():
-    """Return logger for the shared test methods."""
-    return utils.get_logger(__name__)
 
 
 def set_up(test):
