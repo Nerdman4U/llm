@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "llm"
 authors = [{ name = "Joni Töyrylä", email = "info@jonitoyryla.eu" }]
-version = "0.1"
+version = "0.2.0"
 description = ""
 requires-python = ">=3.10"
 
@@ -28,22 +28,50 @@ llm = []
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.1"
-version_files = [
-    "pyproject.toml:^version"
-]
+version = "0.2.0"
+version_files = ["pyproject.toml:^version"]
 update_changelog_on_bump = true
 style = [
-    ["qmark", "fg:#ff9d00 bold"],
-    ["question", "bold"],
-    ["answer", "fg:#ff9d00 bold"],
-    ["pointer", "fg:#ff9d00 bold"],
-    ["highlighted", "fg:#ff9d00 bold"],
-    ["selected", "fg:#cc5454"],
-    ["separator", "fg:#cc5454"],
-    ["instruction", ""],
-    ["text", ""],
-    ["disabled", "fg:#858585 italic"]
+    [
+        "qmark",
+        "fg:#ff9d00 bold",
+    ],
+    [
+        "question",
+        "bold",
+    ],
+    [
+        "answer",
+        "fg:#ff9d00 bold",
+    ],
+    [
+        "pointer",
+        "fg:#ff9d00 bold",
+    ],
+    [
+        "highlighted",
+        "fg:#ff9d00 bold",
+    ],
+    [
+        "selected",
+        "fg:#cc5454",
+    ],
+    [
+        "separator",
+        "fg:#cc5454",
+    ],
+    [
+        "instruction",
+        "",
+    ],
+    [
+        "text",
+        "",
+    ],
+    [
+        "disabled",
+        "fg:#858585 italic",
+    ],
 ]
 
 [tool.black]
