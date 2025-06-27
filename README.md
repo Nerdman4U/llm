@@ -3,8 +3,7 @@
 Wrapper classes for Hugging Face Transformers LLM models.
 
 NOTE: Package has a dependency of not-yet published package! To make it work without, must
-remove InitializationParams and just read arguments without it. Also for logger need to remove
-utils.logger.
+remove InitializationParams and just read arguments without it.
 
 ## How to use
 
