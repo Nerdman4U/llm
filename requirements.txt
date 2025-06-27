@@ -10,3 +10,4 @@ PyYAML
 inflection
 transformers
 torch
+loguru
