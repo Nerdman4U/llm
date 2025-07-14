@@ -34,6 +34,8 @@ class BaseTransformer(GeneratedBaseTransformer):
     Attributes:
         transformer_model_name (str) : Name of the transformer model.
         cache_dir (str)              : Directory to cache the model and tokenizer.
+        model_type (TypeAlias)       : Type of the model, defaults to PreTrainedModel.
+        tokenizer_type (TypeAlias)   : Type of the tokenizer, defaults to PreTrained
     """
 
     def __init__(self, *args, **kwargs):
