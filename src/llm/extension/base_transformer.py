@@ -3,17 +3,32 @@
 """
 BaseTransformer.py
 """
+from __future__ import annotations
 from typing import cast, Any
 from dataclasses import dataclass
 
 import torch
+import transformers
 from transformers.tokenization_utils_base import PreTrainedTokenizerBase
 from transformers.modeling_utils import PreTrainedModel
 
 # generated
-from llm.generated.base_transformer import (
-    BaseTransformer as GeneratedBaseTransformer,
+from llm.generated.__core.generic_class_loader import load_and_validate_generated_class
+generated, GeneratedClass = load_and_validate_generated_class(
+    "llm.generated.base_transformer",
+    "BaseTransformer",
 )
+
+TYPE_CLASSES = {
+    "PreTrainedModel": PreTrainedModel,
+    "PreTrainedTokenizerBase": PreTrainedTokenizerBase,
+    "AutoModelForSeq2SeqLM": transformers.AutoModelForSeq2SeqLM,
+    "AutoTokenizer": transformers.AutoTokenizer,
+    "AutoModelForCausalLM": transformers.AutoModelForCausalLM,
+    "GemmaTokenizer": transformers.GemmaTokenizer,
+    "BertModel": transformers.BertModel,
+    "BertTokenizer": transformers.BertTokenizer,
+}
 
 
 @dataclass
@@ -24,7 +39,7 @@ class ThinkResult:
     value: str | list[str] | dict[str, Any]
 
 
-class BaseTransformer(GeneratedBaseTransformer):
+class BaseTransformer():
     """
     BaseTransformer class is a base class LLM classes.
 
@@ -37,6 +52,8 @@ class BaseTransformer(GeneratedBaseTransformer):
         model_type (TypeAlias)       : Type of the model, defaults to PreTrainedModel.
         tokenizer_type (TypeAlias)   : Type of the tokenizer, defaults to PreTrained
     """
+    # _model: PreTrainedModel | None
+    # _tokenizer: PreTrainedTokenizerBase | None
 
     def __init__(self, *args, **kwargs):
         """
@@ -47,22 +64,50 @@ class BaseTransformer(GeneratedBaseTransformer):
         """
         self._model = None
         self._tokenizer = None
-        self._cache_dir: str = kwargs.get("cache_dir", "./cache")
-        self._transformer_model_name: str | None = kwargs.get("transformer_model_name")
-        self._model_type = kwargs.get("model_type")
-        self._tokenizer_type = kwargs.get("tokenizer_type")
-        super().__init__(*args, **kwargs)
+        kwargs.setdefault("cache_dir", "./cache")
+
+        if not GeneratedClass:
+            raise ImportError(
+                f"Generated class {__class__.__name__} not found. "
+                "Ensure that the generated code is available."
+            )
+        kwargs['extension'] = self
+        self._generated = GeneratedClass(*args, **kwargs)
+
+        self._cache_dir: str = self.generated().cache_dir
+        self._transformers_model_name: str = self.generated().transformers_model_name
+        self._model_type: str = self.generated().model_type
+        self._tokenizer_type: str = self.generated().tokenizer_type
+
+    def generated(self):
+        """
+        Retrieve the generated class instance.
+
+        Returns:
+            GeneratedClass: Instance of the generated class.
+        """
+        return self._generated
+
+    # ---------------------------------------------
+    # 1. Generated attributes
+    # ---------------------------------------------
+    def __getattr__(self, name):
+        """Seamlessly delegate to generated class."""
+        if self._generated and hasattr(self._generated, name):
+            return getattr(self._generated, name)
+        # return self.initialization_params().get(name, None)
+        return None
 
     @property
     def model(self):
         """
         Retrieve the pre-trained model.
         """
-        if not self.cache_dir():
+        if not self.cache_dir:
             raise ValueError(
                 "Cache directory must be set before initializing the tokenizer."
             )
-        if not self.transformer_model_name:
+        if not self.transformers_model_name:
             raise ValueError(
                 "Transformer model name must be set before initializing the model."
             )
@@ -83,11 +128,11 @@ class BaseTransformer(GeneratedBaseTransformer):
         """
         Retrieve the pre-trained tokenizer.
         """
-        if not self.cache_dir():
+        if not self.cache_dir:
             raise ValueError(
                 "Cache directory must be set before initializing the tokenizer."
             )
-        if not self.transformer_model_name:
+        if not self.transformers_model_name:
             raise ValueError(
                 "Transformer model name must be set before initializing the model."
             )
@@ -103,49 +148,28 @@ class BaseTransformer(GeneratedBaseTransformer):
         """Delete the pre-trained tokenizer."""
         self._tokenizer = None
 
-    @property
-    def transformer_model_name(self) -> str:
-        """Retrieve the model name."""
-        if not self._transformer_model_name:
-            raise ValueError(
-                "Transformer model name must be set before initializing the model."
-            )
-        return self._transformer_model_name
-
-    @property
-    def model_type(self):
-        """
-        Retrieve the model type.
-        """
-        if not self._model_type:
-            raise ValueError("Model type must be set before initializing the model.")
-        return self._model_type
-
-    @property
-    def tokenizer_type(self):
-        """
-        Retrieve the tokenizer type.
-        """
-        if not self._tokenizer_type:
-            raise ValueError(
-                "Tokenizer type must be set before initializing the tokenizer."
-            )
-        return self._tokenizer_type
-
-    def cache_dir(self) -> str:
-        """Retrieve the cache directory."""
-        return self._cache_dir
-
     def get_model(self):
         """Retrieve the pre-trained model."""
         if self.model:
             return self.model
 
+        model_type_str = self.model_type
+        if not model_type_str:
+            raise ValueError("Model type must be set before initializing the model.")
+
         # cache to memory - use dynamic model_type
-        model_class = self.model_type
+        model_class = TYPE_CLASSES.get(model_type_str)
+        if not model_class:
+            raise ValueError("Model type must be set before initializing the model.")
+        if not self.transformers_model_name:
+            raise ValueError(
+                "Transformer model name must be set before initializing the model."
+            )
         model = model_class.from_pretrained(
-            self.transformer_model_name, cache_dir=self.cache_dir()
+            self.transformers_model_name, cache_dir=self.cache_dir
         )
+
+        # cache to memory
         self._model = model
         return model
 
@@ -154,10 +178,18 @@ class BaseTransformer(GeneratedBaseTransformer):
         if self.tokenizer:
             return self.tokenizer
 
+        tokenizer_type_str = self.tokenizer_type
+        if not tokenizer_type_str:
+            raise ValueError(
+                "Tokenizer type must be set before initializing the tokenizer.")
+
         # load tokenizer from network - use dynamic tokenizer_type
-        tokenizer_class = self.tokenizer_type
+        tokenizer_class = TYPE_CLASSES.get(tokenizer_type_str)
+        if not tokenizer_class:
+            raise ValueError(
+                "Tokenizer type must be set before initializing the tokenizer.")
         tok = tokenizer_class.from_pretrained(
-            self.transformer_model_name, cache_dir=self.cache_dir()
+            self.transformers_model_name, cache_dir=self.cache_dir
         )
         self._tokenizer = tok  # cache to memory
         return tok

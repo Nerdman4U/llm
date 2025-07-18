@@ -25,17 +25,22 @@ classes:
             has_default: true
           - name: tokenizer_type
             type: str
-            default_value: PreTrainedTokenizer
-            description: Type of the tokenizer, defaults to "PreTrainedTokenizer"
+            default_value: PreTrainedTokenizerBase
+            description: Type of the tokenizer, defaults to "PreTrainedTokenizerBase"
             access_modifier: protected
             escape_default: true
             has_default: true
 
     - name: BertTransformer
       description: Transformer class for BERT-based models
+      extends:
+          - BaseTransformer
+      generated_class_extends:
+          - BaseTransformer
       attributes:
-          - name: transformer_model_name
+          - name: transformers_model_name
             type: str
+            access_modifier: protected
             default_value: bert-base-uncased
             escape_default: true
             has_default: true
@@ -46,16 +51,31 @@ classes:
                     - "bert-large-uncased"
                     - "bert-base-cased"
                     - "bert-large-cased"
-      flags:
-          - no-inherit-generated
-      extends:
-          - BaseTransformer
+          - name: model_type
+            type: str
+            description: Type of the model
+            access_modifier: protected
+            default_value: BertModel
+            escape_default: true
+            has_default: true
+          - name: tokenizer_type
+            type: str
+            default_value: BertTokenizer
+            description: Type of the tokenizer
+            access_modifier: protected
+            escape_default: true
+            has_default: true
 
     - name: T5Transformer
       description: Transformer class for T5-based models
+      extends:
+          - BaseTransformer
+      generated_class_extends:
+          - BaseTransformer
       attributes:
-          - name: transformer_model_name
+          - name: transformers_model_name
             type: str
+            access_modifier: protected
             default_value: t5-base
             escape_default: true
             has_default: true
@@ -66,16 +86,31 @@ classes:
                     - "t5-large"
                     - "t5-3b"
                     - "t5-11b"
-      flags:
-          - no-inherit-generated
-      extends:
-          - BaseTransformer
+          - name: model_type
+            type: str
+            description: Type of the model
+            access_modifier: protected
+            default_value: AutoModelForSeq2SeqLM
+            escape_default: true
+            has_default: true
+          - name: tokenizer_type
+            type: str
+            default_value: AutoTokenizer
+            description: Type of the tokenizer
+            access_modifier: protected
+            escape_default: true
+            has_default: true
 
     - name: CodeGemmaTransformer
       description: Transformer class for google/codegemma models
+      extends:
+          - BaseTransformer
+      generated_class_extends:
+          - BaseTransformer
       attributes:
-          - name: transformer_model_name
+          - name: transformers_model_name
             type: str
+            access_modifier: protected
             default_value: "google/codegemma-2b"
             escape_default: true
             has_default: true
@@ -84,16 +119,31 @@ classes:
                 choices:
                     - "google/codegemma-2b"
                     - "google/codegemma-7b"
-      flags:
-          - no-inherit-generated
-      extends:
-          - BaseTransformer
+          - name: model_type
+            type: str
+            description: Type of the model
+            access_modifier: protected
+            default_value: AutoModelForCausalLM
+            escape_default: true
+            has_default: true
+          - name: tokenizer_type
+            type: str
+            default_value: GemmaTokenizer
+            description: Type of the tokenizer
+            access_modifier: protected
+            escape_default: true
+            has_default: true
 
     - name: SalesforceTransformer
       description: Transformer class for Salesforce models
+      extends:
+          - BaseTransformer
+      generated_class_extends:
+          - BaseTransformer
       attributes:
-          - name: transformer_model_name
+          - name: transformers_model_name
             type: str
+            access_modifier: protected
             default_value: "Salesforce/codegen-350M-mono"
             escape_default: true
             has_default: true
@@ -101,7 +151,17 @@ classes:
                 presence: true
                 choices:
                     - "Salesforce/codegen-350M-mono"
-      flags:
-          - no-inherit-generated
-      extends:
-          - BaseTransformer
+          - name: model_type
+            type: str
+            description: Type of the model
+            access_modifier: protected
+            default_value: AutoModelForCausalLM
+            escape_default: true
+            has_default: true
+          - name: tokenizer_type
+            type: str
+            default_value: AutoTokenizer
+            description: Type of the tokenizer
+            access_modifier: protected
+            escape_default: true
+            has_default: true

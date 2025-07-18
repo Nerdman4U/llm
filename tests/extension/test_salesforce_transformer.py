@@ -27,16 +27,14 @@ class TestSalesforceTransformer(BaseTestClass):
     Test cases for SalesforceTransformer class.
     """
 
-    def test_initialize(self):
+    def test_transformer_has_correct_values(self):
         """
-        Test the initialization of the SalesforceTransformer class.
-
-        NOTE: this is already done in generated model. Start by writing
-        better test for this class.
+        Test the get_tokenizer method of BertTransformer class.
         """
         obj = SalesforceTransformer()
-        self.assertTrue(obj)
-        self.assertEqual(obj.transformer_model_name, "Salesforce/codegen-350M-mono")
+        self.assertEqual(obj.transformers_model_name, "Salesforce/codegen-350M-mono")
+        self.assertEqual(obj.model_type, "AutoModelForCausalLM")
+        self.assertEqual(obj.tokenizer_type, "AutoTokenizer")
 
 
 if __name__ == "__main__":

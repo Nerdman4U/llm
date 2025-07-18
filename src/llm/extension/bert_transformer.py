@@ -3,7 +3,7 @@
 """
 BertTransformer.py
 """
-from typing import TypeAlias
+from typing import TypeAlias, cast
 
 import torch
 
@@ -11,8 +11,12 @@ from transformers import BertModel, BertTokenizer
 
 from llm.extension.base_transformer import BaseTransformer
 
-ModelType: TypeAlias = BertModel
-TokenizerType: TypeAlias = BertTokenizer
+
+from llm.generated.__core.generic_class_loader import load_and_validate_generated_class
+generated, GeneratedClass = load_and_validate_generated_class(
+    "llm.generated.bert_transformer",
+    "BertTransformer",
+)
 
 
 class BertTransformer(BaseTransformer):
@@ -26,10 +30,20 @@ class BertTransformer(BaseTransformer):
         """
         Initialize the BertTransformer class with given arguments.
         """
-        kwargs.setdefault("transformer_model_name", "bert-base-uncased")
-        kwargs.setdefault("model_type", ModelType)
-        kwargs.setdefault("tokenizer_type", TokenizerType)
         super().__init__(*args, **kwargs)
+
+        if not GeneratedClass:
+            raise ImportError(
+                f"Generated class {__class__.__name__} not found. "
+                "Ensure that the generated code is available."
+            )
+        kwargs['extension'] = self
+        self._generated = GeneratedClass(*args, **kwargs)
+
+        self._cache_dir: str = self.generated().cache_dir
+        self._transformers_model_name: str = self.generated().transformers_model_name
+        self._model_type: str = self.generated().model_type
+        self._tokenizer_type: str = self.generated().tokenizer_type
 
     def generate(self, *args, **kwargs):
         """
@@ -40,21 +54,14 @@ class BertTransformer(BaseTransformer):
             "BERT is not a generative model, so generate is not implemented."
         )
 
-    # fmt: off
-    # pylint: disable=useless-parent-delegation
-    def get_model(
-            self,
-    ) -> ModelType:
-        """Retrieve the pre-trained BERT model with proper typing."""
-        return super().get_model()
+    # def get_model(self) -> BertModel:
+    #     """Retrieve the pre-trained BERT model with proper typing."""
+    #     return cast(BertModel, super().get_model())
 
-    # pylint: disable=useless-parent-delegation
-    def get_tokenizer(
-        self,
-    ) -> TokenizerType:
-        """Retrieve the pre-trained BERT tokenizer with proper typing."""
-        return super().get_tokenizer()
-    # fmt: on
+    # # pylint: disable=useless-parent-delegation
+    # def get_tokenizer(self) -> BertTokenizer:
+    #     """Retrieve the pre-trained BERT tokenizer with proper typing."""
+    #     return cast(BertTokenizer, super().get_tokenizer())
 
     def encode(self, text: str):
         """
@@ -88,8 +95,6 @@ class BertTransformer(BaseTransformer):
         Returns:
             Tensor: Sentence-level embeddings
         """
-        import torch
-
         embeddings = self.encode(text)
         # Use [CLS] token embedding as sentence representation
         return embeddings[:, 0, :]  # First token is [CLS]
@@ -193,7 +198,7 @@ class BertTransformer(BaseTransformer):
         all_scores = []
 
         for i in range(0, len(documents), batch_size):
-            batch_docs = documents[i : i + batch_size]
+            batch_docs = documents[i: i + batch_size]
 
             # Tokenize batch of documents
             doc_inputs = tokenizer(
@@ -248,7 +253,7 @@ if __name__ == "__main__":
 
     def __test_similarity():
         ai = BertTransformer()
-        print(ai.transformer_model_name)
+        print(ai.transformers_model_name)
         # print(ai.get_model())
         # print(ai.get_tokenizer())
         print(ai.similarity("I love cats", "I adore felines"))
@@ -267,3 +272,4 @@ if __name__ == "__main__":
             print(f"{score:.3f}: {doc}")
 
     __test_search()
+    # __test_similarity()

@@ -19,22 +19,24 @@ from llm.extension.base_transformer import ThinkResult
 from tests.extension import shared_test_methods
 from tests.extension.base_test_class import BaseTestClass
 
+from tests.generated.test_t5_transformer import (
+    TestT5Transformer as GeneratedTestT5Transformer
+)
+
 
 class TestT5Transformer(BaseTestClass):
     """
     Test cases for T5Transformer class.
     """
 
-    def test_initialize(self):
+    def test_transformer_has_correct_values(self):
         """
-        Test the initialization of the T5Transformer class.
-
-        NOTE: this is already done in generated model. Start by writing
-        better test for this class.
+        Test the get_tokenizer method of T5Transformer class.
         """
         obj = T5Transformer()
-        self.assertTrue(obj)
-        self.assertEqual(obj.transformer_model_name, "t5-base")
+        self.assertEqual(obj.transformers_model_name, "t5-base")
+        self.assertEqual(obj.model_type, "AutoModelForSeq2SeqLM")
+        self.assertEqual(obj.tokenizer_type, "AutoTokenizer")
 
     @patch("llm.extension.t5_transformer.AutoModelForSeq2SeqLM.from_pretrained")
     @patch("llm.extension.t5_transformer.AutoTokenizer.from_pretrained")

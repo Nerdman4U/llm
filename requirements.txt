@@ -10,4 +10,5 @@ PyYAML
 inflection
 transformers
 torch
-loguru
+pydantic
+loguru_wrapper

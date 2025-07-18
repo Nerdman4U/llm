@@ -3,15 +3,18 @@
 """
 CodeGemmaTransformer.py
 """
-from typing import TypeAlias
+from typing import TypeAlias, cast
 
 # from huggingface_hub import login
 from transformers import GemmaTokenizer, AutoModelForCausalLM
 
 from llm.extension.base_transformer import BaseTransformer
 
-ModelType: TypeAlias = AutoModelForCausalLM
-TokenizerType: TypeAlias = GemmaTokenizer
+from llm.generated.__core.generic_class_loader import load_and_validate_generated_class
+generated, GeneratedClass = load_and_validate_generated_class(
+    "llm.generated.code_gemma_transformer",
+    "CodeGemmaTransformer",
+)
 
 
 class CodeGemmaTransformer(BaseTransformer):
@@ -24,19 +27,26 @@ class CodeGemmaTransformer(BaseTransformer):
         Initialize the CodeGemmaTransformer class with given arguments.
         """
         kwargs.setdefault("transformer_model_name", "google/codegemma-2b")
-        kwargs.setdefault("model_type", ModelType)
-        kwargs.setdefault("tokenizer_type", TokenizerType)
+
         super().__init__(*args, **kwargs)
 
-    # pylint: disable=useless-parent-delegation
-    def get_model(self) -> ModelType:
-        """Retrieve the pre-trained CodeGemma model with proper typing."""
-        return super().get_model()
+        if not GeneratedClass:
+            raise ImportError(
+                f"Generated class {__class__.__name__} not found. "
+                "Ensure that the generated code is available."
+            )
+        kwargs['extension'] = self
+        self._generated = GeneratedClass(*args, **kwargs)
 
     # pylint: disable=useless-parent-delegation
-    def get_tokenizer(self) -> TokenizerType:
+    def get_model(self) -> AutoModelForCausalLM:
+        """Retrieve the pre-trained CodeGemma model with proper typing."""
+        return cast(AutoModelForCausalLM, super().get_model())
+
+    # pylint: disable=useless-parent-delegation
+    def get_tokenizer(self) -> GemmaTokenizer:
         """Retrieve the pre-trained CodeGemma tokenizer with proper typing."""
-        return super().get_tokenizer()
+        return cast(GemmaTokenizer, super().get_tokenizer())
 
     def generate_code(self, prompt: str, **kwargs) -> str | list[str]:
         """
