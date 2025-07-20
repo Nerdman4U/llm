@@ -3,7 +3,7 @@ source .venv/bin/activate
 
 # PYTHONPATH
 export PYTHONPATH=$PYTHONPATH:/opt/workspace/llm/src
-export PYTHONPATH=$PYTHONPATH:/opt/workspace/locshapython/src
+# export PYTHONPATH=$PYTHONPATH:/opt/workspace/locshapython/src
 
 # PATH
 export PATH=$PATH:/opt/workspace/llm/bin

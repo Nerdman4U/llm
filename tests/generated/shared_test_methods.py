@@ -9,21 +9,12 @@ import os
 import re
 import shutil
 import pathlib
-from types import SimpleNamespace
-
-from locshapython.extension.commands.command_manager import CommandManager
-
-# 1. from locshapython.extension.registry import Registry OR
-# 2. from gim_metaproject.extension.registry import Registry
-from locshapython.extension.registry import Registry
 
 
 def set_up(test):
     """
     Set up the test environment.
     """
-    Registry.set_command_manager(CommandManager())
-
     fixtures: pathlib.Path = (pathlib.Path(__file__) / "../../fixtures").resolve()
     workspace: pathlib.Path = fixtures / "workspace"
     install_path: pathlib.Path = fixtures / "install"
@@ -33,8 +24,6 @@ def set_up(test):
     test.projects_path = projects_path
     test.install_path = install_path
 
-    Registry.set_module_spec(SimpleNamespace(origin=fixtures / "install"))
-
 
 def tear_down(test, to_be_removed=None):
     """
@@ -42,8 +31,6 @@ def tear_down(test, to_be_removed=None):
 
     Remove fixtures.
     """
-    Registry.clear()
-
     if not re.search("fixtures", str(test.fixtures)):
         raise ValueError("Invalid path")
 
