@@ -1,13 +1,7 @@
-# -*- coding: utf-8 -*-
-# black: skip file
 """
 BertTransformer.py
 """
-from typing import TypeAlias, cast
-
 import torch
-
-from transformers import BertModel, BertTokenizer
 
 from llm.extension.base_transformer import BaseTransformer
 
@@ -45,7 +39,7 @@ class BertTransformer(BaseTransformer):
         self._model_type: str = self.generated().model_type
         self._tokenizer_type: str = self.generated().tokenizer_type
 
-    def generate(self, *args, **kwargs):
+    def _generate(self, *args, **kwargs):
         """
         Generate method for BertTransformer. BERT is primarily used for understanding text,
         so this method may not be applicable in the same way as in generative models.
@@ -54,16 +48,7 @@ class BertTransformer(BaseTransformer):
             "BERT is not a generative model, so generate is not implemented."
         )
 
-    # def get_model(self) -> BertModel:
-    #     """Retrieve the pre-trained BERT model with proper typing."""
-    #     return cast(BertModel, super().get_model())
-
-    # # pylint: disable=useless-parent-delegation
-    # def get_tokenizer(self) -> BertTokenizer:
-    #     """Retrieve the pre-trained BERT tokenizer with proper typing."""
-    #     return cast(BertTokenizer, super().get_tokenizer())
-
-    def encode(self, text: str):
+    def _encode(self, text: str):
         """
         Encode text into BERT embeddings.
 
@@ -73,8 +58,8 @@ class BertTransformer(BaseTransformer):
         Returns:
             Tensor: BERT embeddings for the input text
         """
-        tokenizer = self.get_tokenizer()
-        model = self.get_model()
+        tokenizer = self._get_tokenizer()
+        model = self._get_model()
 
         # Tokenize input
         inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True)
@@ -95,7 +80,7 @@ class BertTransformer(BaseTransformer):
         Returns:
             Tensor: Sentence-level embeddings
         """
-        embeddings = self.encode(text)
+        embeddings = self._encode(text)
         # Use [CLS] token embedding as sentence representation
         return embeddings[:, 0, :]  # First token is [CLS]
 
@@ -182,8 +167,8 @@ class BertTransformer(BaseTransformer):
         if not documents:
             return []
 
-        tokenizer = self.get_tokenizer()
-        model = self.get_model()
+        tokenizer = self._get_tokenizer()
+        model = self._get_model()
 
         # Get query embedding
         query_inputs = tokenizer(
@@ -253,9 +238,6 @@ if __name__ == "__main__":
 
     def __test_similarity():
         ai = BertTransformer()
-        print(ai.transformers_model_name)
-        # print(ai.get_model())
-        # print(ai.get_tokenizer())
         print(ai.similarity("I love cats", "I adore felines"))
         # >> 0.968
 
@@ -268,6 +250,8 @@ if __name__ == "__main__":
             "Python is a programming language",
         ]
         results = ai.search("cats and kittens", documents, top_k=3)
+        print("Result:")
+        print("-------------------")
         for doc, score in results:
             print(f"{score:.3f}: {doc}")
 

@@ -1,13 +1,6 @@
-# -*- coding: utf-8 -*-
-# black: skip file
 """
 CodeGemmaTransformer.py
 """
-from typing import TypeAlias, cast
-
-# from huggingface_hub import login
-from transformers import GemmaTokenizer, AutoModelForCausalLM
-
 from llm.extension.base_transformer import BaseTransformer
 
 from llm.generated.__core.generic_class_loader import load_and_validate_generated_class
@@ -38,17 +31,17 @@ class CodeGemmaTransformer(BaseTransformer):
         kwargs['extension'] = self
         self._generated = GeneratedClass(*args, **kwargs)
 
-    # pylint: disable=useless-parent-delegation
-    def get_model(self) -> AutoModelForCausalLM:
-        """Retrieve the pre-trained CodeGemma model with proper typing."""
-        return cast(AutoModelForCausalLM, super().get_model())
+    # # pylint: disable=useless-parent-delegation
+    # def get_model(self) -> AutoModelForCausalLM:
+    #     """Retrieve the pre-trained CodeGemma model with proper typing."""
+    #     return cast(AutoModelForCausalLM, super().get_model())
 
-    # pylint: disable=useless-parent-delegation
-    def get_tokenizer(self) -> GemmaTokenizer:
-        """Retrieve the pre-trained CodeGemma tokenizer with proper typing."""
-        return cast(GemmaTokenizer, super().get_tokenizer())
+    # # pylint: disable=useless-parent-delegation
+    # def get_tokenizer(self) -> GemmaTokenizer:
+    #     """Retrieve the pre-trained CodeGemma tokenizer with proper typing."""
+    #     return cast(GemmaTokenizer, super().get_tokenizer())
 
-    def generate_code(self, prompt: str, **kwargs) -> str | list[str]:
+    def generate_code(self, prompt: str, **kwargs) -> str:
         """
         Generate code completion using CodeGemma.
 
@@ -72,26 +65,24 @@ class CodeGemmaTransformer(BaseTransformer):
             "temperature": 0.2,  # Lower temperature for more consistent code
             "do_sample": True,
             "top_p": 0.9,
-            "pad_token_id": self.get_tokenizer().eos_token_id,
+            "pad_token_id": self._get_tokenizer().eos_token_id,
         }
         code_params.update(kwargs)
-
-        output = self.generate(prompt, **code_params)
-        return self.decode(output)
+        return self.conjure(prompt, **code_params)
 
     def complete_function(
-        self, function_signature: str, description: str = "", **kwargs
-    ) -> str | list[str]:
+            self, function_signature: str, description: str = "", **kwargs
+    ) -> str:
         """
-        Complete a function based on its signature and description.
+         Complete a function based on its signature and description.
 
-        Args:
-            function_signature (str): The function signature
-            description (str): Description of what the function should do
-            **kwargs: Generation parameters
+         Args:
+             function_signature (str): The function signature
+             description (str): Description of what the function should do
+             **kwargs: Generation parameters
 
-        Returns:
-            str: Complete function implementation
+         Returns:
+             str: Complete function implementation
         """
         prompt = (
             f"{function_signature}\n    # {description}\n"
@@ -100,7 +91,7 @@ class CodeGemmaTransformer(BaseTransformer):
         )
         return self.generate_code(prompt, **kwargs)
 
-    def refactor_code(self, code: str, instruction: str, **kwargs) -> str | list[str]:
+    def refactor_code(self, code: str, instruction: str, **kwargs) -> str:
         """
         Refactor existing code based on instruction.
 
@@ -115,7 +106,7 @@ class CodeGemmaTransformer(BaseTransformer):
         prompt = f"{code}\n\n# {instruction}\n"
         return self.generate_code(prompt, **kwargs)
 
-    def explain_code(self, code: str, **kwargs) -> str | list[str]:
+    def explain_code(self, code: str, **kwargs) -> str:
         """
         Generate explanation for given code.
 
@@ -134,22 +125,19 @@ if __name__ == "__main__":
 
     def __test_thinking():
         # Example usage
-        ai = CodeGemmaTransformer()
-        print(ai.transformer_model_name)
-        # print(ai.get_model())
-        # print(ai.get_tokenizer())
-
-        args_input_text = """
+        _ai = CodeGemmaTransformer()
+        _prompt = """
             class Person:
                 def __init__(self, name):
                     self.name = name
                     # Add age attribute with getter and setter
         """
+        result1 = _ai.generate_code(
+            _prompt, generation_kwargs={"max_length": 150}
+        )
+        print(result1)
 
-        __main_output = ai.generate(args_input_text)
-        # print(__main_output)
-        __main_decoded = ai.decode(__main_output)
-        # print(__main_decoded)
-        print(ai.think(args_input_text, generation_kwargs={"max_length": 150}).value)
+        result2 = _ai.explain_code(result1, generation_kwargs={"max_length": 150})
+        print(result2)
 
     __test_thinking()

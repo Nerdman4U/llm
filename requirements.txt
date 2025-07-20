@@ -8,7 +8,10 @@ build
 python-dotenv
 PyYAML
 inflection
-transformers
-torch
 pydantic
 loguru_wrapper
+
+# LLM
+sentencepiece
+transformers
+torch

@@ -1,12 +1,6 @@
-# -*- coding: utf-8 -*-
-# black: skip file
 """
 T5Transformer.py
 """
-from typing import TypeAlias, cast
-
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
-
 from llm.extension.base_transformer import BaseTransformer
 
 from llm.generated.__core.generic_class_loader import load_and_validate_generated_class
@@ -42,15 +36,6 @@ class T5Transformer(BaseTransformer):
         kwargs['extension'] = self
         self._generated = GeneratedClass(*args, **kwargs)
 
-    def get_model(self) -> AutoModelForSeq2SeqLM:
-        """Retrieve the pre-trained BERT model with proper typing."""
-        return cast(AutoModelForSeq2SeqLM, super().get_model())
-
-    # pylint: disable=useless-parent-delegation
-    def get_tokenizer(self) -> AutoTokenizer:
-        """Retrieve the pre-trained BERT tokenizer with proper typing."""
-        return cast(AutoTokenizer, super().get_tokenizer())
-
 
 if __name__ == "__main__":
 
@@ -59,14 +44,10 @@ if __name__ == "__main__":
         Test the T5Transformer thinking capability.
         """
         ai = T5Transformer()
-        print(ai.transformer_model_name)
-        # print(ai.get_model())
-        # print(ai.get_tokenizer())
-        # print(ai.generate("Say hi"))
-        response = ai.think(
+        response = ai.conjure(
             "Translate English to French: The house is wonderful.",
             generation_kwargs={"max_length": 50},
-        ).value
+        )
         print(response)  # Output: La maison est merveilleuse.
 
     __test_thinking()

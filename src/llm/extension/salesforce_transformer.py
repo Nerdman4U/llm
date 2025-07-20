@@ -1,12 +1,6 @@
-# -*- coding: utf-8 -*-
-# black: skip file
 """
 SalesforceTransformer.py
 """
-from typing import TypeAlias, cast
-
-from transformers import AutoModelForCausalLM, AutoTokenizer
-
 from llm.extension.base_transformer import BaseTransformer
 
 from llm.generated.__core.generic_class_loader import load_and_validate_generated_class
@@ -39,24 +33,14 @@ class SalesforceTransformer(BaseTransformer):
         kwargs['extension'] = self
         self._generated = GeneratedClass(*args, **kwargs)
 
-    # def get_model(self) -> AutoModelForCausalLM:
-    #     """Retrieve the pre-trained BERT model with proper typing."""
-    #     return cast(AutoModelForCausalLM, super().get_model())
-
-    # # pylint: disable=useless-parent-delegation
-    # def get_tokenizer(self) -> AutoTokenizer:
-    #     """Retrieve the pre-trained BERT tokenizer with proper typing."""
-    #     return cast(AutoTokenizer, super().get_tokenizer())
-
 
 if __name__ == "__main__":
 
     def __test_thinking():
         ai = SalesforceTransformer()
-        print(ai.transformers_model_name)
-        # print(ai.get_model())
-        # print(ai.get_tokenizer())
-        response = ai.think("def sum(*args):")
+        response = ai.conjure("def sum(*args):")
+        print("Result:")
+        print("-------------------")
         print(response)
 
     __test_thinking()

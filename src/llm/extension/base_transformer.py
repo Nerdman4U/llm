@@ -1,11 +1,8 @@
-# -*- coding: utf-8 -*-
-# black: skip file
 """
 BaseTransformer.py
 """
 from __future__ import annotations
-from typing import cast, Any
-from dataclasses import dataclass
+from typing import cast
 
 import torch
 import transformers
@@ -31,14 +28,6 @@ TYPE_CLASSES = {
 }
 
 
-@dataclass
-class ThinkResult:
-    """ThinkResult class is a data class to hold the result of the think method."""
-
-    type: str
-    value: str | list[str] | dict[str, Any]
-
-
 class BaseTransformer():
     """
     BaseTransformer class is a base class LLM classes.
@@ -51,9 +40,13 @@ class BaseTransformer():
         cache_dir (str)              : Directory to cache the model and tokenizer.
         model_type (TypeAlias)       : Type of the model, defaults to PreTrainedModel.
         tokenizer_type (TypeAlias)   : Type of the tokenizer, defaults to PreTrained
+
+    Public methods:
+        conjure
+        conjure_multiple
+        conjure_with_scores
+        conjure_batches
     """
-    # _model: PreTrainedModel | None
-    # _tokenizer: PreTrainedTokenizerBase | None
 
     def __init__(self, *args, **kwargs):
         """
@@ -79,6 +72,9 @@ class BaseTransformer():
         self._model_type: str = self.generated().model_type
         self._tokenizer_type: str = self.generated().tokenizer_type
 
+    # ---------------------------------------------
+    # 1. Generated code
+    # ---------------------------------------------
     def generated(self):
         """
         Retrieve the generated class instance.
@@ -88,16 +84,17 @@ class BaseTransformer():
         """
         return self._generated
 
-    # ---------------------------------------------
-    # 1. Generated attributes
-    # ---------------------------------------------
     def __getattr__(self, name):
         """Seamlessly delegate to generated class."""
         if self._generated and hasattr(self._generated, name):
             return getattr(self._generated, name)
-        # return self.initialization_params().get(name, None)
         return None
 
+    # ---------------------------------------------
+    # 2. LLM properties
+    #    - model
+    #    - tokenizer
+    # ---------------------------------------------
     @property
     def model(self):
         """
@@ -148,7 +145,10 @@ class BaseTransformer():
         """Delete the pre-trained tokenizer."""
         self._tokenizer = None
 
-    def get_model(self):
+    # ---------------------------------------------
+    # 3. Protected methods
+    # ---------------------------------------------
+    def _get_model(self):
         """Retrieve the pre-trained model."""
         if self.model:
             return self.model
@@ -173,7 +173,7 @@ class BaseTransformer():
         self._model = model
         return model
 
-    def get_tokenizer(self):
+    def _get_tokenizer(self):
         """Retrieve the pre-trained tokenizer."""
         if self.tokenizer:
             return self.tokenizer
@@ -194,87 +194,24 @@ class BaseTransformer():
         self._tokenizer = tok  # cache to memory
         return tok
 
-    def think(self, *args, **kwargs) -> ThinkResult:
+    def _decode_all(self, output: torch.Tensor) -> list[str]:
         """
-        This is the main method to generate text from the input.
+        Decode the output from the transformer model to a list of strings.
 
         Args:
-            input_text (str): Input text to give LLM.
-            generate_type (str): Type of generation to perform. Options are:
-                - "default": Default generation method.
-                - "multiple": Generate multiple sequences (alternatives).
-                - "with_scores": Generate with scores/probabilities.
-                - "batch": Generate in batch for multiple inputs.
-            generation_kwargs (dict): Additional generation parameters like:
-                - max_length: Maximum length of generated sequence
-                - num_return_sequences: Number of sequences to generate
-                - temperature: Sampling temperature
-                - do_sample: Whether to use sampling
+            output: The model output tensor(s)
 
         Returns:
-            str: Decoded output from the transformer model.
-
-        Example:
-            >>> ai = T5Transformer()
-            >>> ai.think("Translate English to French: The house is wonderful.")
-            "La maison est merveilleuse."
+            list[str]: Decoded text(s)
         """
-        input_text = args[0] if len(args) > 0 else kwargs.get("input_text")
-        generate_type = (
-            args[1] if len(args) > 1 else kwargs.get("generate_type", "default")
-        )
-        generation_kwargs = kwargs.get("generation_kwargs", {})
-
-        if generate_type == "multiple":
-            if not input_text:
-                raise ValueError("Input text must be provided for generation.")
-            if not isinstance(input_text, str):
-                raise ValueError("Input text must be a string for default generation.")
-            num_sequences = kwargs.get("num_sequences", 3)
-            value = self.generate_multiple(input_text, num_sequences=num_sequences)
-            return ThinkResult(type="multiple", value=value)
-        elif generate_type == "with_scores":
-            if not input_text:
-                raise ValueError("Input text must be provided for generation.")
-            if not isinstance(input_text, str):
-                raise ValueError("Input text must be a string for default generation.")
-            value = self.generate_with_scores(input_text, **kwargs)
-            return ThinkResult(type="with_scores", value=value)
-        elif generate_type == "batch":
-            input_texts = kwargs.get("input_texts", [])
-            if not isinstance(input_texts, list):
-                raise ValueError("input_texts must be a list for batch generation.")
-            value = self.batch_generate(input_texts, **kwargs)
-            return ThinkResult(type="batch", value=value)
-        else:
-            if not input_text:
-                raise ValueError("Input text must be provided for generation.")
-            if not isinstance(input_text, str):
-                raise ValueError("Input text must be a string for default generation.")
-            # Default generation method
-            if not input_text.strip():
-                raise ValueError("Input text cannot be empty for generation.")
-
-            # Set default generation parameters
-            default_params = {
-                "max_length": 100,
-                "num_return_sequences": 1,
-                "do_sample": True,
-                "temperature": 0.7,
-            }
-            default_params.update(generation_kwargs)
-            value = str(self.decode(self.generate(input_text, **default_params)))
-            return ThinkResult(type="default", value=value)
-
-    def decode_all(self, output: torch.Tensor) -> list[str]:
-        tokenizer = cast(PreTrainedTokenizerBase, self.get_tokenizer())
+        tokenizer = cast(PreTrainedTokenizerBase, self._get_tokenizer())
         if not tokenizer:
             raise ValueError(
                 "Tokenizer must be initialized before converting to string."
             )
         return [tokenizer.decode(seq, skip_special_tokens=True) for seq in output]
 
-    def decode(self, output: torch.Tensor) -> str:
+    def _decode(self, output: torch.Tensor) -> str:
         """
         Decode the output from the transformer model to a string.
 
@@ -283,16 +220,16 @@ class BaseTransformer():
             return_all: If True, return all sequences; if False, return only the first
 
         Returns:
-            str or list[str]: Decoded text(s)
+            str: Decoded text(s)
         """
-        tokenizer = cast(PreTrainedTokenizerBase, self.get_tokenizer())
+        tokenizer = cast(PreTrainedTokenizerBase, self._get_tokenizer())
         if not tokenizer:
             raise ValueError(
                 "Tokenizer must be initialized before converting to string."
             )
         return tokenizer.decode(output[0], skip_special_tokens=True)
 
-    def generate(self, input_text: str, **generation_kwargs) -> torch.Tensor:
+    def _generate(self, input_text: str, **generation_kwargs) -> torch.Tensor:
         """
         Generate output from the transformer model based on the input text.
 
@@ -306,10 +243,10 @@ class BaseTransformer():
                 - top_k: Top-k sampling parameter
                 - top_p: Top-p (nucleus) sampling parameter
         """
-        tokenizer = cast(PreTrainedTokenizerBase, self.get_tokenizer())
+        tokenizer = cast(PreTrainedTokenizerBase, self._get_tokenizer())
         if not tokenizer:
             raise ValueError("Tokenizer must be initialized before generating output.")
-        model = cast(PreTrainedModel, self.get_model())
+        model = cast(PreTrainedModel, self._get_model())
         if not model:
             raise ValueError("Model must be initialized before generating output.")
 
@@ -317,7 +254,23 @@ class BaseTransformer():
 
         return model.generate(**inputs, **generation_kwargs)  # type: ignore
 
-    def generate_multiple(
+    # ---------------------------------------------
+    # 4. Public methods
+    # ---------------------------------------------
+    def conjure(self, prompt, **kwargs) -> str:
+        """
+        Generate a result from the prompt using the model.
+
+        Args:
+            prompt (str): The input text to generate from
+            **kwargs: Additional generation parameters
+
+        Returns:
+            str: The generated text
+        """
+        return self._decode(self._generate(prompt, **kwargs))
+
+    def conjure_multiple(
         self, input_text: str, num_sequences: int = 3, **kwargs
     ) -> list[str]:
         """
@@ -333,11 +286,10 @@ class BaseTransformer():
             list[str]: List of generated text sequences
         """
         kwargs["num_return_sequences"] = num_sequences
-        output = self.generate(input_text, **kwargs)
-        decoded = self.decode_all(output)
+        decoded = self._decode_all(self._generate(input_text, **kwargs))
         return decoded if isinstance(decoded, list) else [decoded]
 
-    def generate_with_scores(self, input_text: str, **kwargs):
+    def conjure_with_scores(self, input_text: str, **kwargs):
         """
         Generate output with generation scores/probabilities.
 
@@ -351,8 +303,8 @@ class BaseTransformer():
         kwargs["return_dict_in_generate"] = True
         kwargs["output_scores"] = True
 
-        tokenizer = cast(PreTrainedTokenizerBase, self.get_tokenizer())
-        model = cast(PreTrainedModel, self.get_model())
+        tokenizer = cast(PreTrainedTokenizerBase, self._get_tokenizer())
+        model = cast(PreTrainedModel, self._get_model())
 
         inputs = tokenizer(input_text, return_tensors="pt")
 
@@ -368,7 +320,7 @@ class BaseTransformer():
 
         # Decode the sequences
         sequences = output.sequences if hasattr(output, "sequences") else output
-        decoded_text = self.decode(sequences)
+        decoded_text = self._decode(sequences)
 
         result = {
             "text": decoded_text,
@@ -381,9 +333,19 @@ class BaseTransformer():
 
         return result
 
-    def batch_generate(self, input_texts: list[str], **kwargs) -> list[str]:
+    def conjure_batches(self, input_texts: list[str], **kwargs) -> list[str]:
         """
         Generate outputs for multiple input texts in batch.
+
+        What happens under the hood:
+
+        Sequential: GPU sits mostly idle
+        GPU: [▓░░░] [▓░░░] [▓░░░]  ← Only ~25% utilization per call
+              call1  call2  call3
+
+        Batch: GPU fully utilized
+        GPU: [▓▓▓▓] ← ~90% utilization, processes all 3 at once!
+              batch
 
         Args:
             input_texts (list[str]): List of input texts
@@ -392,8 +354,8 @@ class BaseTransformer():
         Returns:
             list[str]: List of generated texts
         """
-        tokenizer = cast(PreTrainedTokenizerBase, self.get_tokenizer())
-        model = cast(PreTrainedModel, self.get_model())
+        tokenizer = cast(PreTrainedTokenizerBase, self._get_tokenizer())
+        model = cast(PreTrainedModel, self._get_model())
 
         # Tokenize all inputs
         inputs = tokenizer(
