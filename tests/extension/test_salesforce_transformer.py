@@ -3,7 +3,7 @@ SalesforceTransformer.py
 """
 import unittest
 
-from llm.extension.salesforce_transformer import (
+from local_conjurer.extension.salesforce_transformer import (
     SalesforceTransformer
 )
 

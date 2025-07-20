@@ -6,7 +6,7 @@ import unittest
 from unittest.mock import patch, MagicMock
 from loguru import logger as loguru_logger
 
-from llm.generated.__core import logger_wrapper
+from local_conjurer.generated.__core import logger_wrapper
 
 
 class TestLoggerWrapper(unittest.TestCase):  # pylint: disable=too-many-public-methods

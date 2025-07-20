@@ -1,11 +1,11 @@
 """
 T5Transformer.py
 """
-from llm.extension.base_transformer import BaseTransformer
+from local_conjurer.extension.base_transformer import BaseTransformer
 
-from llm.generated.__core.generic_class_loader import load_and_validate_generated_class
+from local_conjurer.generated.__core.generic_class_loader import load_and_validate_generated_class
 generated, GeneratedClass = load_and_validate_generated_class(
-    "llm.generated.t5_transformer",
+    "local_conjurer.generated.t5_transformer",
     "T5Transformer",
 )
 

@@ -3,7 +3,7 @@ BertTransformer.py
 """
 import unittest
 
-from llm.extension.bert_transformer import (
+from local_conjurer.extension.bert_transformer import (
     BertTransformer
 )
 

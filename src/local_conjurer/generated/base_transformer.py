@@ -12,7 +12,7 @@ from loguru_wrapper import loguru
 from pydantic import BaseModel, BeforeValidator, Field
 
 # generated
-# from llm.generated.__core import logger_wrapper
+# from local_conjurer.generated.__core import logger_wrapper
 
 
 

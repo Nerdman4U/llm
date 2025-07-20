@@ -9,7 +9,7 @@ import inspect
 
 import torch
 
-from llm.extension.base_transformer import BaseTransformer
+from local_conjurer.extension.base_transformer import BaseTransformer
 from tests.extension.base_test_class import BaseTestClass
 
 
@@ -192,7 +192,7 @@ class TestBaseTransformer(BaseTestClass):
 
 
 # Mock the entire transformers import
-@patch('llm.extension.base_transformer.transformers')
+@patch('local_conjurer.extension.base_transformer.transformers')
 class TestWithMockedTransformers(BaseTestClass):
     """
     Tests with completely mocked transformers library! 🎭

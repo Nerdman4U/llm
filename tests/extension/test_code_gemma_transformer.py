@@ -3,7 +3,7 @@ CodeGemmaTransformer.py
 """
 import unittest
 
-from llm.extension.code_gemma_transformer import (
+from local_conjurer.extension.code_gemma_transformer import (
     CodeGemmaTransformer
 )
 

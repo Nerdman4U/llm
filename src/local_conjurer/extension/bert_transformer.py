@@ -3,12 +3,12 @@ BertTransformer.py
 """
 import torch
 
-from llm.extension.base_transformer import BaseTransformer
+from local_conjurer.extension.base_transformer import BaseTransformer
 
 
-from llm.generated.__core.generic_class_loader import load_and_validate_generated_class
+from local_conjurer.generated.__core.generic_class_loader import load_and_validate_generated_class
 generated, GeneratedClass = load_and_validate_generated_class(
-    "llm.generated.bert_transformer",
+    "local_conjurer.generated.bert_transformer",
     "BertTransformer",
 )
 
