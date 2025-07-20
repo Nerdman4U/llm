@@ -16,16 +16,43 @@ A Python library providing clean, easy-to-use wrapper classes for popular Huggin
 ### Installation
 
 ```bash
-# Clone the repository
-git clone <your-repo-url>
+# For users - install from PyPI
+pip install local-conjurer
+```
+
+### Basic Usage
+
+```python
+from local_conjurer import CodeGemma, T5, Bert
+
+# Summon your personal conjurer
+conjurer = CodeGemma()
+
+# Cast your first spell! ✨
+code = conjurer.conjure("def fibonacci(n):")
+print(code)  # Beautiful code appears!
+```
+
+### Development Installation
+
+```bash
+# For developers - clone and install in development mode
+git clone https://github.com/Nerdman4U/llm
 cd llm
 
 # Set up virtual environment
 python -m venv .venv
-source .init_workspace
+source .venv/bin/activate  # Linux/Mac
+# or .venv\Scripts\activate  # Windows
+
+# Install development dependencies
+pip install -r dev-requirements.txt
+
+# Install in development mode
+pip install -e .
 
 # Run tests
-pyt
+pytest
 
 # Dry-run
 python src/local_conjurer
