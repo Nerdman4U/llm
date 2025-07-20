@@ -1,3 +1,9 @@
+## 0.3.1 (2025-07-20)
+
+### Fix
+
+- **local_conjurer**: Renamed, fixed tests
+
 ## 0.3.0 (2025-07-20)
 
 ### Feat
