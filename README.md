@@ -26,6 +26,9 @@ source .init_workspace
 
 # Run tests
 pyt
+
+# Dry-run
+python src/local_conjurer
 ```
 
 ### Environment Setup
