@@ -13,7 +13,7 @@ classifiers = [
 ]
 name = "local-conjurer"
 authors = [{ name = "Joni Töyrylä", email = "info@jonitoyryla.eu" }]
-version = "0.3.1"
+version = "0.3.2"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = ["transformers>=4.52.4", "torch>=2.7.1", "sentencepiece>=0.2"]
@@ -40,7 +40,7 @@ llm = []
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.3.1"
+version = "0.3.2"
 version_files = ["pyproject.toml:^version"]
 tag_format = "$version"
 update_changelog_on_bump = true
