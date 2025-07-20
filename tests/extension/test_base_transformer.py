@@ -11,8 +11,11 @@ from llm.extension.base_transformer import (
     BaseTransformer
 )
 
-from tests.extension import shared_test_methods
+# pylint: disable=unused-import
 from tests.extension.base_test_class import BaseTestClass
+from tests.generated.test_base_transformer import (
+    TestBaseTransformer as GeneratedTestBaseTransformer
+)
 
 
 class ConcreteBaseTransformer(BaseTransformer):
