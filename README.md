@@ -45,7 +45,7 @@ export HUGGING_FACE_TOKEN="your_hf_token_here"
 T5 treats every NLP task as a text-to-text problem. Excellent for translation, summarization, and text transformation tasks.
 
 ```python
-from llm.extension.t5_transformer import T5Transformer
+from local_conjurer.extension.t5_transformer import T5Transformer
 
 ai = T5Transformer()
 response = ai.conjure(
@@ -62,7 +62,7 @@ print(response)  # Output: "La maison est merveilleuse."
 BERT excels at understanding text context and meaning. Perfect for similarity comparison, semantic search, and text classification.
 
 ```python
-from llm.extension.bert_transformer import BertTransformer
+from local_conjurer.extension.bert_transformer import BertTransformer
 
 ai = BertTransformer()
 documents = [
@@ -93,7 +93,7 @@ scores = ai.batch_similarity("machine learning", documents)
 CodeGemma specializes in understanding and generating code. Great for code completion, refactoring suggestions, and programming help.
 
 ```python
-from llm.extension.code_gemma_transformer import CodeGemmaTransformer
+from local_conjurer.extension.code_gemma_transformer import CodeGemmaTransformer
 
 ai = CodeGemmaTransformer()
 code_prompt = """
@@ -129,7 +129,7 @@ better_code = ai.refactor_code(
 Salesforce's CodeT5+ provides advanced code generation capabilities with better understanding of code context and structure.
 
 ```python
-from llm.extension.salesforce_transformer import SalesforceTransformer
+from local_conjurer.extension.salesforce_transformer import SalesforceTransformer
 
 ai = SalesforceTransformer()
 response = ai.conjure("def calculate_fibonacci(n):")
