@@ -29,11 +29,37 @@ class TestBaseTransformer(BaseTestClass):
 
     def test_should_initialize(self):
         """Test if the class can be initialized."""
-        obj = BaseTransformer(
-            
-        )
+        obj = BaseTransformer()
         self.assertTrue(obj)
 
+    def test_should_have_generated_class_instance(self):
+        """Test if the class has generated class instance."""
+        obj = BaseTransformer()
+        self.assertTrue(obj.generated())
+
+    def test_should_return_itself_as_a_str(self):
+        """Test if the class can return itself as a string."""
+        obj = BaseTransformer()
+        self.assertTrue(isinstance(str(obj), str))
+        self.assertTrue(len(str(obj)) > 0)
+
+    def test_should_return_itself_as_a_repr(self):
+        """Test if the class can return itself as a representation."""
+        obj = BaseTransformer()
+        self.assertTrue(isinstance(repr(obj), str))
+        self.assertTrue(len(repr(obj)) > 0)
+
+#   def test_should_create_from_dict(self):
+#       """Test if the class can be created from a dictionary."""
+#       obj = BaseTransformer()
+#       new_obj = BaseTransformer.from_dict(**obj.initialization_params().to_dict())
+#       self.assertTrue(new_obj)
+#       self.assertTrue(isinstance(new_obj, BaseTransformer))
+#       self.assertEqual(new_obj.to_dict(), obj.to_dict())
+#       self.assertEqual(
+#           new_obj.initialization_params().to_dict(),
+#           obj.initialization_params().to_dict()
+#       )
 
 if __name__ == '__main__':
     unittest.main()

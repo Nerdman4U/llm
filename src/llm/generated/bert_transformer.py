@@ -68,6 +68,7 @@ class BertTransformer(BaseTransformerAlias):
         self._model_type = self.initialization_params().model_type
         self._tokenizer_type = self.initialization_params().tokenizer_type
 
+
     @property
     def extension(self):
         """

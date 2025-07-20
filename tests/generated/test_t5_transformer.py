@@ -29,11 +29,37 @@ class TestT5Transformer(BaseTestClass):
 
     def test_should_initialize(self):
         """Test if the class can be initialized."""
-        obj = T5Transformer(
-            
-        )
+        obj = T5Transformer()
         self.assertTrue(obj)
 
+    def test_should_have_generated_class_instance(self):
+        """Test if the class has generated class instance."""
+        obj = T5Transformer()
+        self.assertTrue(obj.generated())
+
+    def test_should_return_itself_as_a_str(self):
+        """Test if the class can return itself as a string."""
+        obj = T5Transformer()
+        self.assertTrue(isinstance(str(obj), str))
+        self.assertTrue(len(str(obj)) > 0)
+
+    def test_should_return_itself_as_a_repr(self):
+        """Test if the class can return itself as a representation."""
+        obj = T5Transformer()
+        self.assertTrue(isinstance(repr(obj), str))
+        self.assertTrue(len(repr(obj)) > 0)
+
+#   def test_should_create_from_dict(self):
+#       """Test if the class can be created from a dictionary."""
+#       obj = T5Transformer()
+#       new_obj = T5Transformer.from_dict(**obj.initialization_params().to_dict())
+#       self.assertTrue(new_obj)
+#       self.assertTrue(isinstance(new_obj, T5Transformer))
+#       self.assertEqual(new_obj.to_dict(), obj.to_dict())
+#       self.assertEqual(
+#           new_obj.initialization_params().to_dict(),
+#           obj.initialization_params().to_dict()
+#       )
 
 if __name__ == '__main__':
     unittest.main()
