@@ -43,4 +43,14 @@ NOTE: can have blocks i.e. [python]
     "--max-line-length=88",
     "--exclude=data,dist,build,.vscode,.git,tests/fixtures"
   ],
+
+  "pylint.args": [
+      "--jobs=1",
+      "--ignored-modules=torch,transformers",
+      "--disable=import-error,no-member"
+  ],
+  "pylint.severity": {
+      "convention": "Information",
+      "refactor": "Hint"
+  }
 }

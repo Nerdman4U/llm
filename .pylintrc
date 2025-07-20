@@ -1,0 +1,12 @@
+[MASTER]
+# Limit the number of parallel jobs
+jobs=1
+
+# Skip heavy external libraries
+ignored-modules=torch,transformers,huggingface_hub
+
+ignore-paths=
+    ^.venv/.*$,
+    ^cache/.*$,
+    ^tests/generated/.*$,
+    ^.*/__pycache__/.*$

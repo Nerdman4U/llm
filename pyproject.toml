@@ -74,13 +74,3 @@ style = [
         "fg:#858585 italic",
     ],
 ]
-
-[tool.black]
-extend-exclude = '''
-    (
-        tests/fixtures/*
-        | dist/*
-    )
-'''
-target-version = ['py310']
-line-length = 88
